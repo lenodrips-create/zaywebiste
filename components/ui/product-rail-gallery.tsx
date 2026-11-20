@@ -22,6 +22,8 @@ export interface RailGarment {
   backImage?: string;
   /** Side-on photo shown while the piece rests on the rail; omit to show the front photo turned away. */
   sideImage?: string;
+  /** Width of the side photo as a fraction of the canvas width, so the rail leaves room for it (defaults to 0.3). */
+  sideWidth?: number;
   /** Short hang-tag text such as a price or a size. */
   tag?: string;
   /** Short facts listed in the detail view. */
@@ -51,6 +53,8 @@ export interface ClothingRailHeroProps extends React.ComponentProps<"section"> {
   hanger?: "wood" | "matte" | "none";
   labels?: ClothingRailHeroLabels;
   onOpenChange?: (index: number | null) => void;
+  /** How far down the canvas the photos reach (0–1). Lower it when your cut-outs end above the canvas bottom, to avoid a gap under the rail. */
+  photoBottom?: number;
 }
 
 const VB_W = 200;
@@ -533,6 +537,7 @@ export function ClothingRailHero({
   hanger = "wood",
   labels = DEFAULT_LABELS,
   onOpenChange,
+  photoBottom = 1,
   className,
   ...rest
 }: ClothingRailHeroProps) {
@@ -558,7 +563,7 @@ export function ClothingRailHero({
   const returnFocus = React.useRef(null as number | null);
   const pendingOpen = React.useRef(-1);
   const pointer = React.useRef({ id: -1, index: -1, x: 0, y: 0, t: 0, moved: false, kind: "", swipe: 0, lastX: 0, lastT: 0, v: 0 });
-  const sideWidths = React.useMemo(() => items.map((item) => (item.image ? (item.sideImage ? 0.3 : 0.4) : SIDE[item.kind ?? "tee"].width)), [items]);
+  const sideWidths = React.useMemo(() => items.map((item) => (item.image ? (item.sideImage ? (item.sideWidth ?? 0.3) : 0.4) : SIDE[item.kind ?? "tee"].width)), [items]);
   const live = React.useRef({ active: null as number | null, size, reduced, count, openIndex: null as number | null, carouselIndex: 0, sideWidths });
   live.current = { ...live.current, active, size, reduced, count, openIndex, sideWidths };
 
@@ -916,7 +921,7 @@ export function ClothingRailHero({
   const boxW = h * ASPECT;
   const railY = Math.round(h * 0.07) + 10;
   const railR = Math.max(3, Math.round((RAIL_R / VB_H) * h * 10) / 10);
-  const bottom = count ? Math.max(...items.map((item) => (item.image ? VB_H : SIDE[item.kind ?? "tee"].hem + 8))) / VB_H : 1;
+  const bottom = count ? Math.max(...items.map((item) => (item.image ? VB_H * photoBottom : SIDE[item.kind ?? "tee"].hem + 8))) / VB_H : 1;
 
   return (
     <section
@@ -928,7 +933,6 @@ export function ClothingRailHero({
       className={`relative isolate w-full overflow-hidden bg-background text-foreground ${className ?? ""}`}
     >
       <Defs uid={uid} />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" style={{ background: "radial-gradient(120% 70% at 18% 0%, color-mix(in oklab, var(--color-foreground) 7%, transparent), transparent 62%), linear-gradient(to bottom, transparent 55%, color-mix(in oklab, var(--color-foreground) 5%, transparent))" }} />
       {(eyebrow || heading) && (
         <header className="relative z-10 flex flex-col items-center gap-2 px-6 pt-8 text-center">
           {eyebrow && <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">{eyebrow}</p>}
@@ -1011,7 +1015,7 @@ export function ClothingRailHero({
                 {item.tag && (
                   <span ref={(node) => { tags.current[i] = node; }} aria-hidden="true" className="pointer-events-none absolute left-1/2 origin-top" style={{ top: (32 / VB_H) * h, transform: "rotate(-12deg)" }}>
                     <span className="block h-[14px] w-px translate-x-[3px] bg-foreground/35" />
-                    <span className="block -translate-x-1/2 translate-x-[3px] whitespace-nowrap rounded-[3px] border border-foreground/10 bg-card px-1.5 pb-1 pt-2 text-[9px] font-semibold leading-none tracking-wide text-card-foreground shadow-[0_2px_6px_color-mix(in_oklab,var(--color-foreground)_18%,transparent)]">
+                    <span className="block -translate-x-1/2 translate-x-[3px] max-sm:-translate-x-[calc(100%-4px)] whitespace-nowrap rounded-[3px] border border-foreground/10 bg-card px-1.5 pb-1 pt-2 text-[9px] font-semibold leading-none tracking-wide text-card-foreground shadow-[0_2px_6px_color-mix(in_oklab,var(--color-foreground)_18%,transparent)]">
                       <span className="absolute left-1/2 top-[3px] size-[3px] -translate-x-1/2 rounded-full bg-foreground/30" />
                       {item.tag}
                     </span>

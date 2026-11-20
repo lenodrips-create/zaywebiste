@@ -16,6 +16,7 @@ export const RAIL_DEMO_ITEMS: RailGarment[] = [
     image: asset("/garments/original-front.webp"),
     backImage: asset("/garments/original-back.webp"),
     sideImage: asset("/garments/original-side.webp"),
+    sideWidth: 0.34,
   },
   {
     id: "the-bloodline",
@@ -28,6 +29,7 @@ export const RAIL_DEMO_ITEMS: RailGarment[] = [
     image: asset("/garments/bloodline-front.webp"),
     backImage: asset("/garments/bloodline-back.webp"),
     sideImage: asset("/garments/bloodline-side.webp"),
+    sideWidth: 0.3,
   },
   {
     id: "grace",
@@ -40,6 +42,7 @@ export const RAIL_DEMO_ITEMS: RailGarment[] = [
     image: asset("/garments/grace-front.webp"),
     backImage: asset("/garments/grace-back.webp"),
     sideImage: asset("/garments/grace-side.webp"),
+    sideWidth: 0.37,
   },
   {
     id: "no-longer-a-slave",
@@ -52,6 +55,7 @@ export const RAIL_DEMO_ITEMS: RailGarment[] = [
     image: asset("/garments/no-longer-a-slave-front.webp"),
     backImage: asset("/garments/no-longer-a-slave-back.webp"),
     sideImage: asset("/garments/no-longer-a-slave-side.webp"),
+    sideWidth: 0.3,
   },
   {
     id: "the-99",
@@ -64,15 +68,17 @@ export const RAIL_DEMO_ITEMS: RailGarment[] = [
     image: asset("/garments/the-99-front.webp"),
     backImage: asset("/garments/the-99-back.webp"),
     sideImage: asset("/garments/the-99-side.webp"),
+    sideWidth: 0.45,
   },
 ];
 
 export default function ClothingRailHeroDemo({ autoplay = true }: { autoplay?: boolean }) {
   return (
-    <div data-rail-demo className="flex min-h-[calc(100svh-6rem)] w-full items-center justify-center bg-background text-foreground">
+    <div data-rail-demo className="flex w-full justify-center bg-background text-foreground">
       <ClothingRailHero
         items={RAIL_DEMO_ITEMS}
-        hanger="wood"
+        hanger="none"
+        photoBottom={0.84}
         eyebrow="New season · Five pieces on the rail"
         heading="A clothing rail you can handle, right on the page."
         caption="Brush along the rail, slide a hanger, lift a piece to see the back."
